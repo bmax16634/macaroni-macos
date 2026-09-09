@@ -1,0 +1,30 @@
+# macOS and temporary files
+.DS_Store
+*.log
+*.tmp
+*~
+
+# Swift and app build output
+.build/
+.swiftpm/
+build/
+DerivedData/
+*.dSYM/
+*.dmg
+*.zip
+
+# Xcode user-specific state
+*.xcuserstate
+xcuserdata/
+
+# Local credentials and signing material
+.env
+.env.*
+!.env.example
+*.cer
+*.key
+*.mobileprovision
+*.p8
+*.p12
+*.pem
+*.provisionprofile
