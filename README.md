@@ -19,6 +19,7 @@ In the past I have used multiple different apps to fix all these issues. My goal
 
 ### Window Snapping
 - Window snapping by dragging
+- Live snap preview while dragging to the left, right, or top edge
 - Window snapping shortcuts
 
 

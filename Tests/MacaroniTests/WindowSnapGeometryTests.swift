@@ -26,6 +26,17 @@ final class WindowSnapGeometryTests: XCTestCase {
         )
     }
 
+    func testPreviewTargetUsesTheSameFrameAsTheFinalSnap() {
+        for action in WindowSnapAction.allCases {
+            let target = WindowSnapPreviewTarget(action: action, visibleFrame: visibleFrame)
+            XCTAssertEqual(target.action, action)
+            XCTAssertEqual(
+                target.frame,
+                WindowSnapGeometry.frame(for: action, in: visibleFrame)
+            )
+        }
+    }
+
     func testDragToLeftEdgeChoosesLeftHalf() {
         XCTAssertEqual(
             WindowDragSnapGeometry.action(

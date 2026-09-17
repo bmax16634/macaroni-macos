@@ -6,6 +6,7 @@ final class WindowDragSnapManager {
     var actionHandler: ((WindowSnapAction) -> Void)?
 
     private let windowSnapController: WindowSnapController
+    private let previewController = WindowSnapPreviewController()
     private var eventMonitor: Any?
     private var initialWindowFrame: CGRect?
     private var windowMoved = false
@@ -50,7 +51,7 @@ final class WindowDragSnapManager {
     private func handle(_ event: NSEvent) {
         switch event.type {
         case .leftMouseDragged:
-            recordDragProgress()
+            recordDragProgress(at: NSEvent.mouseLocation)
         case .leftMouseUp:
             finishDrag(at: NSEvent.mouseLocation)
         default:
@@ -58,7 +59,7 @@ final class WindowDragSnapManager {
         }
     }
 
-    private func recordDragProgress() {
+    private func recordDragProgress(at pointerLocation: CGPoint) {
         guard let currentFrame = try? windowSnapController.focusedWindowFrame() else {
             resetDrag()
             return
@@ -73,9 +74,22 @@ final class WindowDragSnapManager {
             || abs(currentFrame.minY - initialWindowFrame.minY) > 2 {
             windowMoved = true
         }
+
+        guard windowMoved,
+              let screen = screen(containing: pointerLocation),
+              let action = WindowDragSnapGeometry.action(
+                for: pointerLocation,
+                in: screen.frame
+              ) else {
+            previewController.hide(animated: true)
+            return
+        }
+
+        previewController.show(action: action, on: screen)
     }
 
     private func finishDrag(at pointerLocation: CGPoint) {
+        previewController.hide(animated: false)
         defer { resetDrag() }
         guard let initialWindowFrame,
               let currentFrame = try? windowSnapController.focusedWindowFrame() else {
@@ -104,6 +118,7 @@ final class WindowDragSnapManager {
     }
 
     private func resetDrag() {
+        previewController.hide(animated: false)
         initialWindowFrame = nil
         windowMoved = false
     }
